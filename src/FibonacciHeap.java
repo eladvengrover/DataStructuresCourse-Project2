@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 /**
  * FibonacciHeap
  *
@@ -184,13 +186,72 @@ public class FibonacciHeap
     public static class HeapNode{
 
     	public int key;
+        private int rank;
+        private boolean mark;
+        private HeapNode child;
+        private HeapNode next;
+        private HeapNode prev;
+        private HeapNode parent;
 
-    	public HeapNode(int key) {
-    		this.key = key;
-    	}
+       public HeapNode(int key) {
+           this.key = key;
+
+       }
 
     	public int getKey() {
     		return this.key;
     	}
-    }
+
+       public int getRank() {
+           return rank;
+       }
+
+       public boolean isMark() {
+           return mark;
+       }
+
+       public HeapNode getChild() {
+           return child;
+       }
+
+       public HeapNode getNext() {
+           return next;
+       }
+
+       public HeapNode getPrev() {
+           return prev;
+       }
+
+       public HeapNode getParent() {
+           return parent;
+       }
+
+       public void setKey(int key) {
+           this.key = key;
+       }
+
+       public void setRank(int rank) {
+           this.rank = rank;
+       }
+
+       public void setMark(boolean mark) {
+           this.mark = mark;
+       }
+
+       public void setChild(HeapNode child) {
+           this.child = child;
+       }
+
+       public void setNext(HeapNode next) {
+           this.next = next;
+       }
+
+       public void setPrev(HeapNode prev) {
+           this.prev = prev;
+       }
+
+       public void setParent(HeapNode parent) {
+           this.parent = parent;
+       }
+   }
 }
