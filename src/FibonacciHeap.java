@@ -1,4 +1,3 @@
-import java.util.HashMap;
 
 /**
  * FibonacciHeap
@@ -8,15 +7,21 @@ import java.util.HashMap;
 public class FibonacciHeap
 {
 
+    private HeapNode min;
+    private HeapNode first;
+
+    public FibonacciHeap() {
+
+    }
+
    /**
     * public boolean isEmpty()
     *
     * Returns true if and only if the heap is empty.
     *   
     */
-    public boolean isEmpty()
-    {
-    	return false; // should be replaced by student code
+    public boolean isEmpty() {
+    	return first == null;
     }
 		
    /**
@@ -27,9 +32,14 @@ public class FibonacciHeap
     * 
     * Returns the newly created node.
     */
-    public HeapNode insert(int key)
-    {    
-    	return new HeapNode(key); // should be replaced by student code
+    public HeapNode insert(int key) {
+    	HeapNode new_node = new HeapNode(key);
+        this.getLast().updateNextNode(new_node);
+        new_node.updateNextNode(this.getFirst());
+        this.setFirst(new_node);
+        if (this.getMin() == null || new_node.getKey() < this.getMin().getKey())
+            this.setMin(new_node);
+        return new_node;
     }
 
    /**
@@ -50,9 +60,8 @@ public class FibonacciHeap
     * Returns the node of the heap whose key is minimal, or null if the heap is empty.
     *
     */
-    public HeapNode findMin()
-    {
-    	return new HeapNode(678);// should be replaced by student code
+    public HeapNode findMin() {
+    	return this.getMin();
     } 
     
    /**
@@ -61,9 +70,19 @@ public class FibonacciHeap
     * Melds heap2 with the current heap.
     *
     */
-    public void meld (FibonacciHeap heap2)
-    {
-    	  return; // should be replaced by student code   		
+    public void meld (FibonacciHeap heap2) {
+        if (heap2.isEmpty())  // Case 1: heap2 is empty
+            return;
+        if (this.isEmpty()) {  // Case 2: this is empty
+            this.setMin(heap2.getMin());
+            this.setFirst(heap2.getFirst());
+            return;
+        }
+        HeapNode currHeapLast = this.getLast();  // Case 3: both this and heap2 are not empty
+        heap2.getLast().updateNextNode(this.getFirst());
+        currHeapLast.updateNextNode(heap2.getFirst());
+        if (heap2.getMin().getKey() < this.getMin().getKey())
+          this.setMin(heap2.getMin());
     }
 
    /**
@@ -72,9 +91,24 @@ public class FibonacciHeap
     * Returns the number of elements in the heap.
     *   
     */
-    public int size()
-    {
+    public int size() {
     	return -123; // should be replaced by student code
+    }
+
+    /**
+     * public int getNumberOfTrees()
+     *
+     * Returns the number of trees in the heap.
+     *
+     */
+    public int getNumberOfTrees() {
+        HeapNode curr = this.getFirst().getNext();
+        int counter = 1;
+        while (curr != this.getFirst()) {
+            curr = curr.getNext();
+            counter++;
+        }
+        return counter;
     }
     	
     /**
@@ -84,8 +118,7 @@ public class FibonacciHeap
     * (Note: The size of of the array depends on the maximum order of a tree.)  
     * 
     */
-    public int[] countersRep()
-    {
+    public int[] countersRep() {
     	int[] arr = new int[100];
         return arr; //	 to be replaced by student code
     }
@@ -98,8 +131,10 @@ public class FibonacciHeap
     *
     */
     public void delete(HeapNode x) 
-    {    
-    	return; // should be replaced by student code
+    {
+        int delta = x.getKey() - this.getMin().getKey();
+    	this.decreaseKey(x, delta + 1);
+        this.deleteMin();
     }
 
    /**
@@ -132,9 +167,9 @@ public class FibonacciHeap
     * In words: The potential equals to the number of trees in the heap
     * plus twice the number of marked nodes in the heap. 
     */
-    public int potential() 
-    {    
-        return -234; // should be replaced by student code
+    public int potential() {
+        int marked = this.size() - this.nonMarked();
+        return this.getNumberOfTrees() + 2 * marked;
     }
 
    /**
@@ -175,8 +210,28 @@ public class FibonacciHeap
         int[] arr = new int[100];
         return arr; // should be replaced by student code
     }
-    
-   /**
+
+    public HeapNode getMin() {
+        return min;
+    }
+
+    public void setMin(HeapNode min) {
+        this.min = min;
+    }
+
+    public HeapNode getFirst() {
+        return first;
+    }
+
+    public void setFirst(HeapNode first) {
+        this.first = first;
+    }
+
+    public HeapNode getLast() {
+        return this.getFirst().getPrev();
+    }
+
+    /**
     * public class HeapNode
     * 
     * If you wish to implement classes other than FibonacciHeap
@@ -195,7 +250,13 @@ public class FibonacciHeap
 
        public HeapNode(int key) {
            this.key = key;
+           this.prev = this;
+           this.next = this;
+       }
 
+       public void updateNextNode(HeapNode next) {
+           this.setNext(next);
+           next.setPrev(this);
        }
 
     	public int getKey() {
