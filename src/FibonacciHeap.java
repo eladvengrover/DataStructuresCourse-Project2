@@ -9,6 +9,7 @@ public class FibonacciHeap
 
     private HeapNode min;
     private HeapNode first;
+    private int size;
 
     public FibonacciHeap() {
 
@@ -33,6 +34,7 @@ public class FibonacciHeap
     * Returns the newly created node.
     */
     public HeapNode insert(int key) {
+        this.size++;
     	HeapNode new_node = new HeapNode(key);
         this.getLast().updateNextNode(new_node);
         new_node.updateNextNode(this.getFirst());
@@ -48,10 +50,9 @@ public class FibonacciHeap
     * Deletes the node containing the minimum key.
     *
     */
-    public void deleteMin()
-    {
+    public void deleteMin() {
+        this.size--;
      	return; // should be replaced by student code
-     	
     }
 
    /**
@@ -71,6 +72,7 @@ public class FibonacciHeap
     *
     */
     public void meld (FibonacciHeap heap2) {
+        this.size += heap2.size;
         if (heap2.isEmpty())  // Case 1: heap2 is empty
             return;
         if (this.isEmpty()) {  // Case 2: this is empty
@@ -92,7 +94,7 @@ public class FibonacciHeap
     *   
     */
     public int size() {
-    	return -123; // should be replaced by student code
+    	return this.size;
     }
 
     /**
@@ -130,8 +132,7 @@ public class FibonacciHeap
 	* It is assumed that x indeed belongs to the heap.
     *
     */
-    public void delete(HeapNode x) 
-    {
+    public void delete(HeapNode x) {
         int delta = x.getKey() - this.getMin().getKey();
     	this.decreaseKey(x, delta + 1);
         this.deleteMin();
