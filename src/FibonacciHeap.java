@@ -6,7 +6,7 @@
  */
 public class FibonacciHeap
 {
-
+    public static final double PHI = (1 + Math.sqrt(5)) / 2;
     private HeapNode min;
     private HeapNode first;
     private int size;
@@ -52,7 +52,93 @@ public class FibonacciHeap
     */
     public void deleteMin() {
         this.size--;
-     	return; // should be replaced by student code
+        if (size == 0) {
+            this.setMin(null);
+            this.setFirst(null);
+            return;
+        }
+        if (this.getFirst() == this.getMin())
+            this.setFirst(this.getFirst().getNext());
+        this.settleNodePointers();
+        this.consolidating();
+        this.updateMin();
+    }
+
+    private void updateMin() {
+        HeapNode node = this.getFirst();
+        this.setMin(node);
+        node = node.getNext();
+        while (node != this.getFirst())
+            if (node.getKey() < this.getMin().getKey())
+                this.setMin(node);
+    }
+
+    private void settleNodePointers() {
+        HeapNode node = this.getMin();
+        HeapNode nodeLastChild = node.getChild().getPrev();
+        HeapNode nodeFirstChild = node.getChild();
+        do {  // Cut node's parents
+            nodeFirstChild.setParent(null);
+            nodeFirstChild = nodeLastChild.getNext();
+        } while (nodeFirstChild != node.getChild());
+        node.getPrev().updateNextNode(node.getChild());
+        nodeLastChild.updateNextNode(node.getNext());
+    }
+
+    private void consolidating() {
+        HeapNode node = this.getFirst();
+        HeapNode lastNode = node.getPrev();
+        int arrSize = (int)Math.ceil(Math.log(this.size) / Math.log(PHI));
+        HeapNode[] bucketsList = new HeapNode[arrSize];
+        while (node != lastNode) {
+            HeapNode nodeNext = node.getNext();
+            int nodeRank = node.getRank();
+            if (bucketsList[nodeRank] == null) {
+                bucketsList[nodeRank] = node;
+                node = nodeNext;
+                continue;
+            }
+            while (bucketsList[nodeRank] != null) {
+                HeapNode new_node = FibonacciHeap.linkTwoNodes(node, bucketsList[nodeRank]);
+                bucketsList[nodeRank] = null;
+                nodeRank++;
+                node = new_node;
+            }
+            bucketsList[nodeRank] = node;
+            node = nodeNext;
+        }
+        this.arrayToLinkedList(bucketsList);
+    }
+
+    private void arrayToLinkedList(HeapNode[] nodesArr) {
+        int i = 0;
+        for (; i < nodesArr.length; i++) {  // Find first node
+            if (nodesArr[i] != null) {
+                this.setFirst(nodesArr[i]);
+                break;
+            }
+        }
+        HeapNode node = this.getFirst();
+        for (; i < nodesArr.length; i++) {  // Update next for all nodes
+            if (nodesArr[i] != null) {
+                node.updateNextNode(nodesArr[i]);
+                node = nodesArr[i];
+            }
+        }
+        node.updateNextNode(this.getFirst());  // Update first node's prev
+    }
+
+    private static HeapNode linkTwoNodes(HeapNode a, HeapNode b) {
+        if (a.getKey() > b.getKey()) {
+            HeapNode temp = b;
+            b = a;
+            a = temp;
+        }
+        b.setNext(a.getChild());
+        a.getChild().getPrev().updateNextNode(b);
+        a.setChild(b);
+        a.setRank(a.getRank() + 1);
+        return a;
     }
 
    /**
@@ -288,6 +374,10 @@ public class FibonacciHeap
            return parent;
        }
 
+       public boolean getMarked() {
+           return this.isMark();
+       }
+
        public void setKey(int key) {
            this.key = key;
        }
@@ -302,6 +392,7 @@ public class FibonacciHeap
 
        public void setChild(HeapNode child) {
            this.child = child;
+           child.setParent(this);
        }
 
        public void setNext(HeapNode next) {
