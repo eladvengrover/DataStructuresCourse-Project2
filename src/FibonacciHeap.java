@@ -162,6 +162,7 @@ public class FibonacciHeap
         } else
             b.updateNextNode(b);
         a.setChild(b);
+        b.setParent(a);
         a.setRank(a.getRank() + 1);
         return a;
     }
@@ -257,9 +258,38 @@ public class FibonacciHeap
     * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
     */
-    public void decreaseKey(HeapNode x, int delta)
-    {    
-    	return; // should be replaced by student code
+    public void decreaseKey(HeapNode x, int delta) {
+        x.decreaseKey(delta);
+        if (this.getMin() == x || x.getParent().getKey() < x.getKey())
+            return;
+        this.cascadingCut(x, x.getParent());
+    }
+
+    private void cascadingCut(HeapNode x, HeapNode xParent) {
+        this.cut(x, xParent);
+        this.getFirst().getPrev().updateNextNode(x);
+        x.updateNextNode(this.getFirst());
+        this.setFirst(x);
+        if (this.getMin().getKey() > x.getKey())
+            this.setMin(x);
+        if (xParent.getParent() != null) {
+            if (!xParent.isMark())
+                xParent.setMark(true);
+            else
+                this.cascadingCut(xParent, xParent.getParent());
+        }
+    }
+
+    private void cut(HeapNode x, HeapNode xParent) {
+        x.setParent(null);
+        x.setMark(false);
+        xParent.setRank(xParent.getRank() - 1);
+        if (x.getNext() == x) // x is y's only child
+            xParent.setChild(null);
+        else {
+            xParent.setChild(x.getNext());
+            x.getPrev().updateNextNode(x.getNext());
+        }
     }
 
    /**
@@ -419,7 +449,6 @@ public class FibonacciHeap
 
        public void setChild(HeapNode child) {
            this.child = child;
-           child.setParent(this);
        }
 
        public void setNext(HeapNode next) {
@@ -433,5 +462,10 @@ public class FibonacciHeap
        public void setParent(HeapNode parent) {
            this.parent = parent;
        }
+
+       public void decreaseKey(int delta) {
+           this.setKey(this.key - delta);
+       }
+
    }
 }
