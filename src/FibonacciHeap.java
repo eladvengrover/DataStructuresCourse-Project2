@@ -280,7 +280,15 @@ public class FibonacciHeap
             ranksArray[curr.getRank()]++;
             curr = curr.getNext();
         }
-        return ranksArray;
+        int i = arrSize - 1;
+        for (; i > -1; i--) {
+            if (ranksArray[i] != 0)
+                break;
+        }
+        int[] output = new int[i + 1];
+        System.arraycopy(ranksArray, 0, output, 0, i + 1);
+
+        return output;
     }
 	
    /**
@@ -304,7 +312,13 @@ public class FibonacciHeap
     */
     public void decreaseKey(HeapNode x, int delta) {
         x.decreaseKey(delta);
-        if (this.getMin() == x || x.getParent().getKey() < x.getKey())
+        if (x.getParent() == null && x.getKey() < this.getMin().getKey()) {
+            this.setMin(x); // Case 1: x is a root and its key is less than min's key
+            return;
+        }
+        // Case 2-4: x is min, x is a root and its key is bigger than min's key, or x doesn't violate heap rules
+        if (this.getMin() == x || (x.getParent() == null && x.getKey() > this.getMin().getKey())
+                || x.getParent().getKey() < x.getKey())
             return;
         this.cascadingCut(x, x.getParent());
     }
@@ -393,6 +407,8 @@ public class FibonacciHeap
     * ###CRITICAL### : you are NOT allowed to change H. 
     */
     public static int[] kMin(FibonacciHeap H, int k) {
+        if (H.isEmpty())
+            return new int[0];
         FibonacciHeap kHeap = new FibonacciHeap();
         int[] minKSortedArray = new int[k];
         HeapNode min = H.getMin();
