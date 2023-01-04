@@ -27,19 +27,13 @@ public class FibonacciHeap
     public boolean isEmpty() {
     	return first == null;
     }
-		
-   /**
-    * public HeapNode insert(int key)
-    *
-    * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
-    * The added key is assumed not to already belong to the heap.  
-    * 
-    * Returns the newly created node.
-    */
-    public HeapNode insert(int key) {
+
+    private HeapNode insert(int key, HeapNode matchingNode) {
         this.size++;
         this.nonMarked++;
-    	HeapNode newNode = new HeapNode(key);
+        HeapNode newNode = new HeapNode(key);
+        if (matchingNode != null)
+            newNode.setMatchingNode(matchingNode);
         if (this.size == 1) {  // Insertion to an empty heap
             this.setFirst(newNode);
             this.setMin(newNode);
@@ -51,6 +45,19 @@ public class FibonacciHeap
         if (newNode.getKey() < this.getMin().getKey()) // Update min if necessary
             this.setMin(newNode);
         return newNode;
+    }
+
+
+   /**
+    * public HeapNode insert(int key)
+    *
+    * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+    * The added key is assumed not to already belong to the heap.  
+    * 
+    * Returns the newly created node.
+    */
+    public HeapNode insert(int key) {
+        return this.insert(key, null);
     }
 
    /**
@@ -374,10 +381,26 @@ public class FibonacciHeap
     *  
     * ###CRITICAL### : you are NOT allowed to change H. 
     */
-    public static int[] kMin(FibonacciHeap H, int k)
-    {    
-        int[] arr = new int[100];
-        return arr; // should be replaced by student code
+    public static int[] kMin(FibonacciHeap H, int k) {
+        FibonacciHeap kHeap = new FibonacciHeap();
+        int[] minKSortedArray = new int[k];
+        HeapNode min = H.getMin();
+        kHeap.insert(min.getKey(), min);
+        for (int i = 0; i < k; i++) {
+            HeapNode curr = kHeap.findMin();
+            minKSortedArray[i] = curr.getKey();
+            kHeap.deleteMin();
+            addNodesChildrenToKHeap(kHeap, curr.getMatchingNode());
+        }
+        return minKSortedArray;
+    }
+
+    private static void addNodesChildrenToKHeap(FibonacciHeap kHeap, HeapNode node) {
+        HeapNode nodeCurrChild = node.getChild();
+        do {
+            kHeap.insert(nodeCurrChild.getKey(), nodeCurrChild);
+            nodeCurrChild = nodeCurrChild.getNext();
+        } while (nodeCurrChild != node.getChild());
     }
 
     public HeapNode getMin() {
@@ -416,6 +439,7 @@ public class FibonacciHeap
         private HeapNode next;
         private HeapNode prev;
         private HeapNode parent;
+        private HeapNode matchingNode;
 
        public HeapNode(int key) {
            this.key = key;
@@ -460,7 +484,11 @@ public class FibonacciHeap
            return this.isMark();
        }
 
-       public void setKey(int key) {
+       public HeapNode getMatchingNode() {
+            return matchingNode;
+       }
+
+        public void setKey(int key) {
            this.key = key;
        }
 
@@ -486,6 +514,10 @@ public class FibonacciHeap
 
        public void setParent(HeapNode parent) {
            this.parent = parent;
+       }
+
+       public void setMatchingNode(HeapNode matchingNode) {
+            this.matchingNode = matchingNode;
        }
 
        public void decreaseKey(int delta) {
