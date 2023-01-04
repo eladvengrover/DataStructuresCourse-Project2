@@ -7,6 +7,8 @@
 public class FibonacciHeap
 {
     public static final double PHI = (1 + Math.sqrt(5)) / 2;
+    public static int numOfLinks;
+    public static int numOfCuts;
     private HeapNode min;
     private HeapNode first;
     private int size;
@@ -173,6 +175,7 @@ public class FibonacciHeap
     }
 
     private static HeapNode linkTwoTrees(HeapNode a, HeapNode b) {
+        numOfLinks++;
         if (a.getKey() > b.getKey()) { // If a > b then a <-> b
             HeapNode temp = b;
             b = a;
@@ -304,6 +307,7 @@ public class FibonacciHeap
     }
 
     private void cut(HeapNode x, HeapNode xParent) {
+        numOfCuts++;
         x.setParent(null);
         if (x.isMark())
             this.changeNodeMark(x);
@@ -347,9 +351,8 @@ public class FibonacciHeap
     * trees of the same rank, and generates a tree of rank bigger by one, by hanging the
     * tree which has larger value in its root under the other tree.
     */
-    public static int totalLinks()
-    {    
-    	return -345; // should be replaced by student code
+    public static int totalLinks() {
+    	return numOfLinks;
     }
 
    /**
@@ -359,9 +362,8 @@ public class FibonacciHeap
     * run-time of the program. A cut operation is the operation which disconnects a subtree
     * from its parent (during decreaseKey/delete methods). 
     */
-    public static int totalCuts()
-    {    
-    	return -456; // should be replaced by student code
+    public static int totalCuts() {
+    	return numOfCuts;
     }
 
      /**
