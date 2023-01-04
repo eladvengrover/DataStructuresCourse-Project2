@@ -390,7 +390,8 @@ public class FibonacciHeap
             HeapNode curr = kHeap.findMin();
             minKSortedArray[i] = curr.getKey();
             kHeap.deleteMin();
-            addNodesChildrenToKHeap(kHeap, curr.getMatchingNode());
+            if (curr.getMatchingNode().getChild() != null)
+                addNodesChildrenToKHeap(kHeap, curr.getMatchingNode());
         }
         return minKSortedArray;
     }
