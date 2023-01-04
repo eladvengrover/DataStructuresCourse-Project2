@@ -10,6 +10,7 @@ public class FibonacciHeap
     private HeapNode min;
     private HeapNode first;
     private int size;
+    private int nonMarked;
 
     public FibonacciHeap() {
 
@@ -35,6 +36,7 @@ public class FibonacciHeap
     */
     public HeapNode insert(int key) {
         this.size++;
+        this.nonMarked++;
     	HeapNode newNode = new HeapNode(key);
         if (this.size == 1) {  // Insertion to an empty heap
             this.setFirst(newNode);
@@ -57,6 +59,7 @@ public class FibonacciHeap
     */
     public void deleteMin() {
         this.size--;
+        this.nonMarked--;
         if (size == 0) { // Deletion from heap with 1 element
             this.setMin(null);
             this.setFirst(null);
@@ -88,11 +91,13 @@ public class FibonacciHeap
     }
 
     private void cutNodesChildrenFromParent(HeapNode node) {
-        HeapNode nodeFirstChild = node.getChild();
+        HeapNode nodeCurrChild = node.getChild();
         do {
-            nodeFirstChild.setParent(null);
-            nodeFirstChild = nodeFirstChild.getNext();
-        } while (nodeFirstChild != node.getChild());
+            nodeCurrChild.setParent(null);
+            if (nodeCurrChild.isMark())
+                changeNodeMark(nodeCurrChild);
+            nodeCurrChild = nodeCurrChild.getNext();
+        } while (nodeCurrChild != node.getChild());
     }
 
     private void bypassMinNode() {
@@ -134,20 +139,37 @@ public class FibonacciHeap
     private void makeHeapFromTreesArray(HeapNode[] treesArray) {
         int i = 0;
         for (; i < treesArray.length; i++) {  // Find first node
-            if (treesArray[i] != null) {
-                this.setFirst(treesArray[i]);
+            HeapNode node = treesArray[i];
+            if (node != null) {
+                this.setFirst(node);
+                if (node.isMark())
+                    this.changeNodeMark(node);
                 i++;
                 break;
             }
         }
         HeapNode node = this.getFirst();
         for (; i < treesArray.length; i++) {  // Update next for all trees roots
-            if (treesArray[i] != null) {
-                node.updateNextNode(treesArray[i]);
-                node = treesArray[i];
+            HeapNode currNode = treesArray[i];
+            if (currNode != null) {
+                if (currNode.isMark())
+                    this.changeNodeMark(currNode);
+                node.updateNextNode(currNode);
+                node = currNode;
             }
         }
         node.updateNextNode(this.getFirst());  // Update first tree's root prev
+    }
+
+    /**
+     * private void changeNodeMark(HeapNode node)
+     *
+     * Swap node's mark and update nonMarked field accordingly
+     *
+     */
+    private void changeNodeMark(HeapNode node) {
+        this.nonMarked = (node.isMark()) ? this.nonMarked + 1 : this.nonMarked - 1;
+        node.setMark(!node.isMark());
     }
 
     private static HeapNode linkTwoTrees(HeapNode a, HeapNode b) {
@@ -185,6 +207,7 @@ public class FibonacciHeap
     */
     public void meld (FibonacciHeap heap2) {
         this.size += heap2.size;
+        this.nonMarked += heap2.nonMarked;
         if (heap2.isEmpty())  // Case 1: heap2 is empty
             return;
         if (this.isEmpty()) {  // Case 2: this is empty
@@ -274,7 +297,7 @@ public class FibonacciHeap
             this.setMin(x);
         if (xParent.getParent() != null) {
             if (!xParent.isMark())
-                xParent.setMark(true);
+                this.changeNodeMark(xParent);
             else
                 this.cascadingCut(xParent, xParent.getParent());
         }
@@ -282,7 +305,8 @@ public class FibonacciHeap
 
     private void cut(HeapNode x, HeapNode xParent) {
         x.setParent(null);
-        x.setMark(false);
+        if (x.isMark())
+            this.changeNodeMark(x);
         xParent.setRank(xParent.getRank() - 1);
         if (x.getNext() == x) // x is y's only child
             xParent.setChild(null);
@@ -297,9 +321,8 @@ public class FibonacciHeap
     *
     * This function returns the current number of non-marked items in the heap
     */
-    public int nonMarked() 
-    {    
-        return -232; // should be replaced by student code
+    public int nonMarked() {
+        return this.nonMarked;
     }
 
    /**
