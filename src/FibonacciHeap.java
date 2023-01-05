@@ -80,7 +80,10 @@ public class FibonacciHeap
         }
         else { // Deletion from heap with more than 1 trees
             if (this.getFirst() == this.getMin()) // Edge case: first is min
-                this.setFirst(this.getFirst().getNext());
+                this.setFirst(
+                        (this.getFirst().getChild() == null) ?
+                                this.getFirst().getNext() : this.getFirst().getChild()
+                );
             this.bypassMinNode();
         }
         if (this.size > 1)
