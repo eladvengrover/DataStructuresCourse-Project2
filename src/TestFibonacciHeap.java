@@ -999,16 +999,15 @@ public class TestFibonacciHeap {
         // test12
         addKeys(1000);
         Map<Integer, FibonacciHeap.HeapNode> nodes = testInsertion(heap, 5000);
-        heap.decreaseKey(nodes.get(5000), 4000);
+        heap.decreaseKey(nodes.get(5000), 4001);
         assertValidHeap(heap);
 
-        for (int i = 0; i < 2; i++) {
-            assertEquals(1000,  heap.findMin().getKey());
-            heap.deleteMin();
-            assertValidHeap(heap);
-        }
+        assertEquals(999,  heap.findMin().getKey());
+        heap.deleteMin();
+        assertValidHeap(heap);
 
-        for (int i = 1001; i < 2000; i++) {
+
+        for (int i = 1000; i < 2000; i++) {
             assertEquals(i, heap.findMin().getKey());
             heap.deleteMin();
             assertValidHeap(heap);

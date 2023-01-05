@@ -88,18 +88,8 @@ public class FibonacciHeap
         }
         if (this.size > 1)
             this.consolidating();
-        this.findAndUpdateMin();
-    }
-
-    private void findAndUpdateMin() {
-        HeapNode node = this.getFirst();
-        this.setMin(node);
-        node = node.getNext();
-        while (node != this.getFirst()) {
-            if (node.getKey() < this.getMin().getKey())
-                this.setMin(node);
-            node = node.getNext();
-        }
+        else // If the heap contains only 1 node - make it min
+            this.setMin(this.getFirst());
     }
 
     private void cutNodesChildrenFromParent(HeapNode node) {
@@ -154,6 +144,7 @@ public class FibonacciHeap
             HeapNode node = treesArray[i];
             if (node != null) {
                 this.setFirst(node);
+                this.setMin(node);
                 if (node.isMark())
                     this.changeNodeMark(node);
                 i++;
@@ -166,6 +157,8 @@ public class FibonacciHeap
             if (currNode != null) {
                 if (currNode.isMark())
                     this.changeNodeMark(currNode);
+                if (currNode.getKey() < this.getMin().getKey())
+                    this.setMin(currNode);
                 node.updateNextNode(currNode);
                 node = currNode;
             }
