@@ -308,12 +308,12 @@ public class FibonacciHeap
     */
     public void decreaseKey(HeapNode x, int delta) {
         x.decreaseKey(delta);
-        if (x.getParent() == null && x.getKey() < this.getMin().getKey()) {
+        if (x.isRoot() && x.getKey() < this.getMin().getKey()) {
             this.setMin(x); // Case 1: x is a root and its key is less than min's key
             return;
         }
         // Case 2-4: x is min, x is a root and its key is bigger than min's key, or x doesn't violate heap rules
-        if (this.getMin() == x || (x.getParent() == null && x.getKey() > this.getMin().getKey())
+        if (this.getMin() == x || (x.isRoot() && x.getKey() > this.getMin().getKey())
                 || x.getParent().getKey() < x.getKey())
             return;
         this.cascadingCut(x, x.getParent());
@@ -321,13 +321,15 @@ public class FibonacciHeap
 
     private void cascadingCut(HeapNode x, HeapNode xParent) {
         this.cut(x, xParent);
+        // Updating x to be first
         this.getFirst().getPrev().updateNextNode(x);
         x.updateNextNode(this.getFirst());
         this.setFirst(x);
+
         if (this.getMin().getKey() > x.getKey())
             this.setMin(x);
-        if (xParent.getParent() != null) {
-            if (!xParent.isMark())
+        if (!xParent.isRoot()) {
+            if (!xParent.isMark() && !xParent.isRoot())
                 this.changeNodeMark(xParent);
             else
                 this.cascadingCut(xParent, xParent.getParent());
@@ -340,12 +342,13 @@ public class FibonacciHeap
         if (x.isMark())
             this.changeNodeMark(x);
         xParent.setRank(xParent.getRank() - 1);
-        if (x.getNext() == x) // x is y's only child
+        if (x.getNext() == x) // x is xParent's only child
             xParent.setChild(null);
-        else {
+        else if(xParent.getChild() == x) { // x is xParent's leftmost child
             xParent.setChild(x.getNext());
             x.getPrev().updateNextNode(x.getNext());
-        }
+        } else // x is one of xParent's other children
+            x.getPrev().updateNextNode(x.getNext());
     }
 
    /**
@@ -546,6 +549,10 @@ public class FibonacciHeap
 
        public void decreaseKey(int delta) {
            this.setKey(this.key - delta);
+       }
+
+       public boolean isRoot() {
+           return this.getParent() == null;
        }
 
    }

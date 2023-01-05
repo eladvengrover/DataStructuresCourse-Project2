@@ -7,10 +7,13 @@ public class Tester {
     public static void main(String[] args) {
 
         FibonacciHeap heap = new FibonacciHeap();
-        heap.insert(Integer.MIN_VALUE + 1);
-        FibonacciHeap.HeapNode x =heap.insert(0);
+        for (int i = 0; i < 4; i++) {
+            heap.insert(i);
+        }
+        FibonacciHeap.HeapNode x = heap.insert(4);
+        heap.deleteMin();
         heap.delete(x);
-        System.out.println();
+        FibonacciHeap.HeapNode node = heap.getFirst().getChild().getNext();
 
     }
 
