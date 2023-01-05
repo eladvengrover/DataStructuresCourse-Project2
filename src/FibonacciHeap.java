@@ -28,11 +28,19 @@ public class FibonacciHeap
     	return first == null;
     }
 
+    /**
+     * private HeapNode insert(int key, HeapNode matchingNode)
+     *
+     * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+     * The added key is assumed not to already belong to the heap.
+     *
+     * Returns the newly created node.
+     */
     private HeapNode insert(int key, HeapNode matchingNode) {
         this.size++;
         this.nonMarked++;
         HeapNode newNode = new HeapNode(key);
-        if (matchingNode != null)
+        if (matchingNode != null) // For kMin method: adding pointer to H heap
             newNode.setMatchingNode(matchingNode);
         if (this.size == 1) {  // Insertion to an empty heap
             this.setFirst(newNode);
@@ -92,6 +100,12 @@ public class FibonacciHeap
             this.setMin(this.getFirst());
     }
 
+    /**
+     * private void cutNodesChildrenFromParent(HeapNode node)
+     *
+     * Makes all node's children roots by setting its parent to null and unmark it
+     *
+     */
     private void cutNodesChildrenFromParent(HeapNode node) {
         HeapNode nodeCurrChild = node.getChild();
         do {
@@ -102,6 +116,12 @@ public class FibonacciHeap
         } while (nodeCurrChild != node.getChild());
     }
 
+    /**
+     * private void bypassMinNode()
+     *
+     * Bypass min node (by changing the pointers of its prev, next and children) and thus delete min node
+     *
+     */
     private void bypassMinNode() {
         HeapNode node = this.getMin();
         if (node.getChild() == null) { // Simple bypass node without children
@@ -114,6 +134,12 @@ public class FibonacciHeap
         nodeLastChild.updateNextNode(node.getNext());
     }
 
+    /**
+     * private void consolidating()
+     *
+     * Perform consolidation/successive linking process on the heap
+     *
+     */
     private void consolidating() {
         HeapNode node = this.getFirst();
         int arrSize = (int)Math.ceil(Math.log(this.size) / Math.log(PHI));
@@ -138,6 +164,12 @@ public class FibonacciHeap
         this.makeHeapFromTreesArray(bucketsList);
     }
 
+    /**
+     * private void makeHeapFromTreesArray(HeapNode[] treesArray)
+     *
+     * Connect nodes in treesArray to form a heap
+     *
+     */
     private void makeHeapFromTreesArray(HeapNode[] treesArray) {
         int i = 0;
         for (; i < treesArray.length; i++) {  // Find first node
@@ -269,18 +301,25 @@ public class FibonacciHeap
         if (this.size == 1)
             return new int[] {1};
         int arrSize = (int)Math.ceil(Math.log(this.size) / Math.log(PHI));
-        int[] ranksArray = new int[arrSize];
+        return this.buildRanksArray(arrSize);
+    }
+
+    private int[] buildRanksArray(int size) {
+        int[] ranksArray = new int[size];
         ranksArray[this.getFirst().getRank()]++;
+
         HeapNode curr = this.getFirst().getNext();
         while (curr != this.getFirst()) {
             ranksArray[curr.getRank()]++;
             curr = curr.getNext();
         }
-        int i = arrSize - 1;
-        for (; i > -1; i--) {
+
+        // Crop array from 0 to the last non-zero cell
+        int i = size - 1;
+        for (; i > -1; i--)
             if (ranksArray[i] != 0)
                 break;
-        }
+
         int[] output = new int[i + 1];
         System.arraycopy(ranksArray, 0, output, 0, i + 1);
 
@@ -421,6 +460,7 @@ public class FibonacciHeap
         }
         return minKSortedArray;
     }
+
 
     private static void addNodesChildrenToKHeap(FibonacciHeap kHeap, HeapNode node) {
         HeapNode nodeCurrChild = node.getChild();
