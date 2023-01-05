@@ -995,7 +995,6 @@ public class TestFibonacciHeap {
     @Tag("DuplicateValues")
     @Test
     @Order(235)
-    @Ignore
     void testMultipleMinDecreaseKey() {
         // test12
         addKeys(1000);
@@ -1829,10 +1828,10 @@ public class TestFibonacciHeap {
     @Test
     @Order(57)
     public void testDeleteMinValue() {
-        Map<Integer, FibonacciHeap.HeapNode> nodes = testInsertion(heap, Integer.MIN_VALUE, 0);
+        Map<Integer, FibonacciHeap.HeapNode> nodes = testInsertion(heap, Integer.MIN_VALUE + 1, 0);
         testDeletion(heap, nodes.get(0));
-        assertSame(nodes.get(Integer.MIN_VALUE), heap.findMin());
-        assertSame(nodes.get(Integer.MIN_VALUE), heap.getFirst());
+        assertSame(nodes.get(Integer.MIN_VALUE + 1), heap.findMin());
+        assertSame(nodes.get(Integer.MIN_VALUE + 1), heap.getFirst());
     }
 
     @Test

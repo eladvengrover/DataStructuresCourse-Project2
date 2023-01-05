@@ -7,12 +7,11 @@ public class Tester {
     public static void main(String[] args) {
 
         FibonacciHeap heap = new FibonacciHeap();
-        System.out.println(Arrays.toString(FibonacciHeap.kMin(heap, 0)));
+        heap.insert(Integer.MIN_VALUE + 1);
+        FibonacciHeap.HeapNode x =heap.insert(0);
+        heap.delete(x);
+        System.out.println();
 
-        for (int i = 0; i < 65; i++) {
-            heap.insert(i);
-        }
-        heap.deleteMin();
     }
 
 

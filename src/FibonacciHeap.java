@@ -189,8 +189,8 @@ public class FibonacciHeap
             a = temp;
         }
         if (a.getChild() != null) {
-            b.setNext(a.getChild());
             a.getChild().getPrev().updateNextNode(b);
+            b.updateNextNode(a.getChild());
         } else
             b.updateNextNode(b);
         a.setChild(b);
