@@ -82,7 +82,7 @@ public class FibonacciHeap
             this.setFirst(null);
             return;
         }
-        if (this.getNumberOfTrees() == 1) { // Deletion from heap with 1 tree and size > 1
+        if (this.getFirst() == this.getFirst().getNext()) { // Deletion from heap with 1 tree and size > 1
             this.cutNodesChildrenFromParent(this.getFirst());
             this.setFirst(this.getFirst().getChild()); // Update new first
         }
