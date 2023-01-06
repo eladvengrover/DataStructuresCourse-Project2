@@ -303,6 +303,13 @@ public class FibonacciHeap
         return this.buildRanksArray(arrSize);
     }
 
+    /**
+     * private int[] buildRanksArray(int size)
+     *
+     * Gets size value and return an array of counters with size "size".
+     * The i-th entry contains the number of trees of order i in the heap.
+     *
+     */
     private int[] buildRanksArray(int size) {
         int[] ranksArray = new int[size];
         ranksArray[this.getFirst().getRank()]++;
@@ -357,6 +364,12 @@ public class FibonacciHeap
         this.cascadingCut(x, x.getParent());
     }
 
+    /**
+     * private void cascadingCut(HeapNode x, HeapNode xParent)
+     *
+     * Perform cascading-cut process on x and xParent to preserve the heap structure
+     *
+     */
     private void cascadingCut(HeapNode x, HeapNode xParent) {
         this.cut(x, xParent);
         // Updating x to be first
@@ -367,13 +380,19 @@ public class FibonacciHeap
         if (this.getMin().getKey() > x.getKey())
             this.setMin(x);
         if (!xParent.isRoot()) {
-            if (!xParent.isMark() && !xParent.isRoot())
+            if (!xParent.isMark())
                 this.changeNodeMark(xParent);
             else
                 this.cascadingCut(xParent, xParent.getParent());
         }
     }
 
+    /**
+     * private void cut(HeapNode x, HeapNode xParent)
+     *
+     * Gets 2 nodes and perform simple cut between them.
+     *
+     */
     private void cut(HeapNode x, HeapNode xParent) {
         numOfCuts++;
         this.numOfTrees++;
