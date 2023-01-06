@@ -9,6 +9,7 @@ public class FibonacciHeap
     public static final double PHI = (1 + Math.sqrt(5)) / 2;
     public static int numOfLinks;
     public static int numOfCuts;
+    private int numOfTrees;
     private HeapNode min;
     private HeapNode first;
     private int size;
@@ -39,6 +40,7 @@ public class FibonacciHeap
     private HeapNode insert(int key, HeapNode matchingNode) {
         this.size++;
         this.nonMarked++;
+        this.numOfTrees++;
         HeapNode newNode = new HeapNode(key);
         if (matchingNode != null) // For kMin method: adding pointer to H heap
             newNode.setMatchingNode(matchingNode);
@@ -78,11 +80,12 @@ public class FibonacciHeap
         this.size--;
         this.nonMarked--;
         if (size == 0) { // Deletion from heap with 1 element
+            this.numOfTrees--;
             this.setMin(null);
             this.setFirst(null);
             return;
         }
-        if (this.getFirst() == this.getFirst().getNext()) { // Deletion from heap with 1 tree and size > 1
+        if (this.numOfTrees == 1) { // Deletion from heap with 1 tree and size > 1
             this.cutNodesChildrenFromParent(this.getFirst());
             this.setFirst(this.getFirst().getChild()); // Update new first
         }
@@ -96,8 +99,10 @@ public class FibonacciHeap
         }
         if (this.size > 1)
             this.consolidating();
-        else // If the heap contains only 1 node - make it min
+        else { // If the heap contains only 1 node - make it min
             this.setMin(this.getFirst());
+            this.numOfTrees = 1;
+        }
     }
 
     /**
@@ -172,6 +177,7 @@ public class FibonacciHeap
      */
     private void makeHeapFromTreesArray(HeapNode[] treesArray) {
         int i = 0;
+        int newNumOfTrees = 0;
         for (; i < treesArray.length; i++) {  // Find first node
             HeapNode node = treesArray[i];
             if (node != null) {
@@ -180,6 +186,7 @@ public class FibonacciHeap
                 if (node.isMark())
                     this.changeNodeMark(node);
                 i++;
+                newNumOfTrees++;
                 break;
             }
         }
@@ -193,9 +200,11 @@ public class FibonacciHeap
                     this.setMin(currNode);
                 node.updateNextNode(currNode);
                 node = currNode;
+                newNumOfTrees++;
             }
         }
         node.updateNextNode(this.getFirst());  // Update first tree's root prev
+        this.numOfTrees = newNumOfTrees;
     }
 
     /**
@@ -253,6 +262,7 @@ public class FibonacciHeap
     public void meld (FibonacciHeap heap2) {
         this.size += heap2.size;
         this.nonMarked += heap2.nonMarked;
+        this.numOfTrees += heap2.numOfTrees;
         if (heap2.isEmpty())  // Case 1: heap2 is empty
             return;
         if (this.isEmpty()) {  // Case 2: this is empty
@@ -275,24 +285,6 @@ public class FibonacciHeap
     */
     public int size() {
     	return this.size;
-    }
-
-    /**
-     * public int getNumberOfTrees()
-     *
-     * Returns the number of trees in the heap.
-     *
-     */
-    public int getNumberOfTrees() {
-        if (this.size == 0)
-            return 0;
-        HeapNode curr = this.getFirst().getNext();
-        int counter = 1;
-        while (curr != this.getFirst()) {
-            curr = curr.getNext();
-            counter++;
-        }
-        return counter;
     }
     	
     /**
@@ -384,6 +376,7 @@ public class FibonacciHeap
 
     private void cut(HeapNode x, HeapNode xParent) {
         numOfCuts++;
+        this.numOfTrees++;
         x.setParent(null);
         if (x.isMark())
             this.changeNodeMark(x);
@@ -417,7 +410,7 @@ public class FibonacciHeap
     */
     public int potential() {
         int marked = this.size() - this.nonMarked();
-        return this.getNumberOfTrees() + 2 * marked;
+        return this.numOfTrees + 2 * marked;
     }
 
    /**
