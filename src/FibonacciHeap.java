@@ -209,6 +209,13 @@ public class FibonacciHeap
         node.setMark(!node.isMark());
     }
 
+    /**
+     * private static HeapNode linkTwoTrees(HeapNode a, HeapNode b)
+     *
+     * Static function that gets as input two trees of the same rank, and generates a tree of rank bigger by one,
+     * by hanging the tree which has larger value in its root under the other tree.
+     *
+     */
     private static HeapNode linkTwoTrees(HeapNode a, HeapNode b) {
         numOfLinks++;
         if (a.getKey() > b.getKey()) { // If a > b then a <-> b
