@@ -545,23 +545,48 @@ public class FibonacciHeap
        public int getRank() {
            return rank;
        }
-
+        /**
+         * public int getRank()
+         *
+         * return node's rank field.
+         *
+         */
        public boolean isMark() {
            return mark;
        }
-
+        /**
+         * public boolean isMark()
+         *
+         * return node's mark field.
+         *
+         */
        public HeapNode getChild() {
            return child;
        }
-
+        /**
+         * public HeapNode getNext()
+         *
+         * return node's next field.
+         *
+         */
        public HeapNode getNext() {
            return next;
        }
-
+        /**
+         * public HeapNode getPrev()
+         *
+         * return node's prev field.
+         *
+         */
        public HeapNode getPrev() {
            return prev;
        }
-
+        /**
+         * public HeapNode getParent()
+         *
+         * return node's parent field.
+         *
+         */
        public HeapNode getParent() {
            return parent;
        }
@@ -569,47 +594,102 @@ public class FibonacciHeap
        public boolean getMarked() {
            return this.isMark();
        }
-
+        /**
+         * public HeapNode getMatchingNode()
+         *
+         * return node's matchingNode field.
+         *
+         */
        public HeapNode getMatchingNode() {
             return matchingNode;
        }
-
+        /**
+         * public void setKey(int key)
+         *
+         * sets the key field of the node to be key.
+         *
+         */
         public void setKey(int key) {
            this.key = key;
        }
-
+        /**
+         * public void setRank(int rank)
+         *
+         * sets the rank field of the node to be rank.
+         *
+         */
        public void setRank(int rank) {
            this.rank = rank;
        }
-
+        /**
+         * public void setMark(boolean mark)
+         *
+         * sets the mark field of the node to be mark.
+         *
+         */
        public void setMark(boolean mark) {
            this.mark = mark;
        }
-
+        /**
+         * public void setChild(HeapNode child)
+         *
+         * sets the child field of the node to be child.
+         *
+         */
        public void setChild(HeapNode child) {
            this.child = child;
        }
-
+        /**
+         * public void setNext(HeapNode next)
+         *
+         * sets the next field of the node to be next.
+         *
+         */
        public void setNext(HeapNode next) {
            this.next = next;
        }
-
+        /**
+         * public void setPrev(HeapNode prev)
+         *
+         * sets the prev field of the node to be prev.
+         *
+         */
        public void setPrev(HeapNode prev) {
            this.prev = prev;
        }
-
+        /**
+         * public void setParent(HeapNode parent)
+         *
+         * sets the parent field of the node to be parent.
+         *
+         */
        public void setParent(HeapNode parent) {
            this.parent = parent;
        }
-
+        /**
+         * public void setMatchingNode(HeapNode matchingNode)
+         *
+         * sets the matchingNode field of the node to be matchingNode.
+         *
+         */
        public void setMatchingNode(HeapNode matchingNode) {
             this.matchingNode = matchingNode;
        }
-
+        /**
+         * public void decreaseKey(int delta)
+         *
+         * Decreases the key of the node by a non-negative value delta
+         *
+         */
        public void decreaseKey(int delta) {
            this.setKey(this.key - delta);
        }
-
+        /**
+        * public boolean isRoot()
+        *
+        * Returns true if and only if the node is a root of a tree.
+        *
+        */
        public boolean isRoot() {
            return this.getParent() == null;
        }
