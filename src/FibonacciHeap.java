@@ -480,7 +480,13 @@ public class FibonacciHeap
         return minKSortedArray;
     }
 
-
+    /**
+     * private static void addNodesChildrenToKHeap(FibonacciHeap kHeap, HeapNode node)
+     *
+     * Static function that gets FibonacciHeap kHeap with one single tree and HeapNode node
+     * and adds all node's children to kHeap
+     *
+     */
     private static void addNodesChildrenToKHeap(FibonacciHeap kHeap, HeapNode node) {
         HeapNode nodeCurrChild = node.getChild();
         do {
@@ -489,22 +495,52 @@ public class FibonacciHeap
         } while (nodeCurrChild != node.getChild());
     }
 
+    /**
+     * public HeapNode getMin()
+     *
+     * Returns heap's min field
+     *
+     */
     public HeapNode getMin() {
         return min;
     }
 
+    /**
+     * public void setMin(HeapNode min)
+     *
+     * Sets heap's min field to be min
+     *
+     */
     public void setMin(HeapNode min) {
         this.min = min;
     }
 
+    /**
+     * public HeapNode getFirst()
+     *
+     * Returns heap's first field
+     *
+     */
     public HeapNode getFirst() {
         return first;
     }
 
+    /**
+     * public void setFirst(HeapNode first)
+     *
+     * Sets heap's first field to be first
+     *
+     */
     public void setFirst(HeapNode first) {
         this.first = first;
     }
 
+    /**
+     * public HeapNode getLast()
+     *
+     * Returns heap's last tree (accessed by the previous node of first)
+     *
+     */
     public HeapNode getLast() {
         return this.getFirst().getPrev();
     }
@@ -533,11 +569,23 @@ public class FibonacciHeap
            this.next = this;
        }
 
+        /**
+         * public void updateNextNode(HeapNode next)
+         *
+         * Sets next field of this to be next and sets prev field of next to be this
+         *
+         */
        public void updateNextNode(HeapNode next) {
            this.setNext(next);
            next.setPrev(this);
        }
 
+        /**
+         * public int getKey()
+         *
+         * Returns node's key field
+         *
+         */
     	public int getKey() {
     		return this.key;
     	}
@@ -564,10 +612,6 @@ public class FibonacciHeap
 
        public HeapNode getParent() {
            return parent;
-       }
-
-       public boolean getMarked() {
-           return this.isMark();
        }
 
        public HeapNode getMatchingNode() {
